@@ -17,7 +17,7 @@ entity vga_driver is
     );
 end vga_driver;
 
-architecture driver_arch of driver is
+architecture driver_arch of vga_driver is
     signal clk_25 : std_logic; --Zegar działający w 25MHz
 
     --informajce z pdf'a
@@ -55,8 +55,11 @@ begin
     hs <= '0' when xcounter >= 16 and xcounter < 112 else '1';   --16+96
     vs <= '0' when ycounter >= 10 and ycounter < 12 else '1';    --10+2
 
+
     process (xcounter, ycounter, rgb)
     begin
+        --dalej lecimy z tabelki
+        --trzeba odjąć od całego display i policzyć wartości
         if xcounter < 160 or ycounter < 41 then
             vga_r <= '0';
             vga_g <= '0';
@@ -71,18 +74,18 @@ begin
     process (xcounter)
     begin
         if xcounter >= 160 then
-            x <= std_logic_vector(to_unsigned(xcounter - 160, x'length));
+            pix_x <= std_logic_vector(to_unsigned(xcounter - 160, pix_x'length));
         else
-            x <= std_logic_vector(to_unsigned(640, x'length));
+        pix_x <= std_logic_vector(to_unsigned(640, pix_x'length));
         end if;
     end process;
     
     process (ycounter)
     begin
         if ycounter >= 41 then
-            y <= std_logic_vector(to_unsigned(ycounter - 41, y'length));
+            pix_y <= std_logic_vector(to_unsigned(ycounter - 41, pix_y'length));
         else
-            y <= std_logic_vector(to_unsigned(480, y'length));
+            pix_y <= std_logic_vector(to_unsigned(480, pix_y'length));
         end if;
     end process;
 end driver_arch;
